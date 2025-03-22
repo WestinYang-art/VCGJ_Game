@@ -6,7 +6,7 @@ public class GrappleScript : MonoBehaviour
 {
     private bool canGrapple = false;
     private GameObject player;
-    private 
+    private bool inRange;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,21 +24,22 @@ public class GrappleScript : MonoBehaviour
         GrappleAvailable();
     }
 
-    // constantly checks if a grapple point is avaiable or not
+    // constantly checks if a grapple point is avaiable or not and then decides whether you grapple or not based on that
     private void GrappleAvailable()
     {
-        if (canGrapple)
+        /*player.GetComponent<PlayerMovement>().getRange() = inRange;
+        if (canGrapple && player.Input.GetButtonDown("grapple") && inRange == true) // if the grapple point is available and the grapple key is pressed
         {
 
         }
-        else if (canGrapple == false)
+        else if (canGrapple == false && player.Input.GetButtonUp("grapple")) // if the grapple point is let go while connected to the grapple point
         {
 
         }
         else
         {
-
-        }
+            canGrapple = false;
+        }*/
     }
 
     // will be used by the game initializer to set player variable to the player game object in the scene

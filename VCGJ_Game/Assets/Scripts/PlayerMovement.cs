@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private float vertical;
     public float acceleration;
     public float maxSpeed;
+    public GameObject[] tentacles;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         vertical = Input.GetAxisRaw("Vertical");
     }
 
-    void playerMovement()
+    void playerMovement() // calculations for acceleration and movement
     {
         if (rb.velocity.x == 0 && (horizontal == -1 || horizontal == 1))
         {
@@ -92,5 +93,16 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, 0);
             }
         }*/
+    }
+
+    // this will decide if the player is in range of the grapple point or not ps. for now set it to true just to make sure that it connects xd
+    public bool inRange()
+    {
+        return true;
+    }
+
+    public void setTentacles(GameObject[] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
+    {
+        this.tentacles = tentacles;
     }
 }
