@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     private float horizontal;
     private float vertical;
+    private bool squeeze;
     public float acceleration;
     public float maxSpeed;
     public GameObject[] tentacles;
@@ -32,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
+        squeeze = Input.GetKey(KeyCode.S);  //doesn't seem to do what I intended
     }
 
     void playerMovement() // calculations for acceleration and movement
@@ -95,6 +97,19 @@ public class PlayerMovement : MonoBehaviour
         }*/
     }
 
+    // if player is pressing button, they are in the squeeze state.
+    // always true until I figure out how to make it work with the key
+    public bool canSqueeze() 
+    {
+        if (squeeze)
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+    }
     // this will decide if the player is in range of the grapple point or not ps. for now set it to true just to make sure that it connects xd
     public bool inRange()
     {
