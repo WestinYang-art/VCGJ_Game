@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public float currentCamo = 100.0f;
     public float acceleration;
     public float maxSpeed;
-    // tentacle storage
+    //tentacle storage
     private int[][] tentacles;
     // Start is called before the first frame update
     void Start()
@@ -165,7 +165,7 @@ public class PlayerMovement : MonoBehaviour
         return currentCamo;
     }
 
-   // checks if a tentacle is available in that direction using the array
+    // checks if a tentacle is available in that direction using the array
     public void TentacleCheck(int num)
     {
         if (tentacles[num] == null)
@@ -197,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
         return true;
     }
 
-    public void setTentacles(GameObject[] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
+    public void setTentacles(int[][] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
     {
         this.tentacles = tentacles;
     }
