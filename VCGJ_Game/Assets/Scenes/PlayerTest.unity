@@ -216,8 +216,6 @@ MonoBehaviour:
   spriteSortingOrder: 0
   fovSortingLayer: Default
   fovSortingOrder: -1
-  detectionValue: 0
-  distanceToPlayer: 0
 --- !u!50 &239379965
 Rigidbody2D:
   serializedVersion: 4
@@ -843,7 +841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1597617113
 Transform:
   m_ObjectHideFlags: 0
@@ -857,7 +855,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2123843528}
   - {fileID: 2073653433}
   - {fileID: 239379963}
   m_Father: {fileID: 0}
@@ -1198,8 +1195,6 @@ MonoBehaviour:
   spriteSortingOrder: 0
   fovSortingLayer: Default
   fovSortingOrder: -1
-  detectionValue: 0
-  distanceToPlayer: 0
 --- !u!50 &2073653435
 Rigidbody2D:
   serializedVersion: 4
@@ -1344,7 +1339,7 @@ Transform:
   m_Children:
   - {fileID: 1429086727}
   - {fileID: 1374134922}
-  m_Father: {fileID: 1597617113}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -89.192}
 --- !u!114 &2123843529
 MonoBehaviour:
@@ -1374,8 +1369,6 @@ MonoBehaviour:
   spriteSortingOrder: 0
   fovSortingLayer: Default
   fovSortingOrder: -1
-  detectionValue: 0
-  distanceToPlayer: 0
 --- !u!50 &2123843530
 Rigidbody2D:
   serializedVersion: 4
@@ -1528,4 +1521,5 @@ SceneRoots:
   - {fileID: 799732332}
   - {fileID: 8962285037804449265}
   - {fileID: 324523649}
+  - {fileID: 2123843528}
   - {fileID: 1597617113}

@@ -15,7 +15,7 @@ public class SecurityCamera : MonoBehaviour
     public float detectionRange = 10f;
     public float fieldOfView = 30f; // Half-angle
     public LayerMask obstructionMask;
-    public bool playerDetected;
+    
 
 
     [Header("Field of View Settings")]
@@ -32,9 +32,20 @@ public class SecurityCamera : MonoBehaviour
     private Mesh fovMesh;
 
     private float startZRotation;
+    //Current zRotation
+    float zRotation;
     public float detectionValue;
     public float distanceToPlayer;
+    private float timer = 0f;
+    private bool timerRunning = true;
+    private bool playerDetected;
+    private bool wasPlayerDetected;
 
+    
+    //State 0 is the idle state
+    //State 1 is the player detected, locked state
+    //State 2 is returning to idle
+    private int state = 0;
 
     void Start()
     {
@@ -67,36 +78,68 @@ public class SecurityCamera : MonoBehaviour
 
     void Update()
     {
+        if (timerRunning)
+        {
+           timer += Time.deltaTime;
+        }
+        wasPlayerDetected = playerDetected;
+        playerDetected = DetectPlayer();
+
+        // Handle state transitions
         if (playerDetected)
         {
-            focusPlayer();
+            state = 1;
         }
-        else
+        else if (wasPlayerDetected && !playerDetected && state == 1)
         {
-            RotateCamera();
+            state = 2; // Transition to returning to idle
         }
-        DetectPlayer();
+        else if (state == 2)
+        {
+            // Stay in state 2 until RotateBack() finishes the rotation
+        }
+        else if (!playerDetected && state != 2)
+        {
+            state = 0;
+        }
+
+
+        switch (state) {
+            case 0:
+                RotateCamera();
+                break;
+            case 1:
+                focusPlayer();
+                break;
+            case 2:
+                RotateBack();
+                break;
+        }
+        Debug.Log(state);
         DrawFOV();
     }
 
+    //Passive State
     void RotateCamera()
     {
+        timerRunning = true;
         // Back and forth rotation using sine wave
-        float zRotation = startZRotation + Mathf.Sin(Time.time * rotationSpeed) * rotationAngle;
+        zRotation = startZRotation + Mathf.Sin(timer * rotationSpeed) * rotationAngle;
         transform.rotation = Quaternion.Euler(0, 0, zRotation);
     }
+
+    //Locked on Player State
     void focusPlayer()
     {
+        timerRunning = false;
         Vector2 direction = player.position - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle), 200f * Time.deltaTime);
     }
 
-    
-    void DetectPlayer()
+    //Can I see the player?
+    bool DetectPlayer()
     {
-        playerDetected = false;
-
         Vector2 directionToPlayer = player.position - transform.position;
         distanceToPlayer = directionToPlayer.magnitude;
 
@@ -110,10 +153,33 @@ public class SecurityCamera : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer.normalized, detectionRange, ~obstructionMask);
                 if (hit.collider != null && hit.collider.transform == player)
                 {
-                    playerDetected = true;
+                    state = 1;
+                    //No longer sweeping
+                    timerRunning = false;
                     //Debug.Log("Player detected!");
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+
+    void RotateBack()
+    {
+        Quaternion targetRotation = Quaternion.Euler(0, 0, zRotation);
+
+        // Smoothly rotate back towards the target rotation
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 50f * Time.deltaTime);
+
+        // Check if we have reached (or are very close to) the target rotation
+        if (Quaternion.Angle(transform.rotation, targetRotation) < 0.5f)
+        {
+            // Reset back to idle state
+            state = 0;
+            timerRunning = true; // Resume the sweeping motion
+        }
+        if (DetectPlayer()) {
+            state = 1;
         }
     }
 
@@ -160,7 +226,8 @@ public class SecurityCamera : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * detectionRange);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * detectionRange);
     }
-    public float getVisionValue() {
-        return (detectionRange - distanceToPlayer);
+    public float getVisionValue()
+    {
+        return Mathf.Max(0, detectionRange - distanceToPlayer);
     }
 }

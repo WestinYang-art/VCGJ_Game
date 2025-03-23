@@ -19,7 +19,7 @@ public class VisionEnemies : MonoBehaviour
     void Update()
     {
         sumVision();
-        Debug.Log(TotalVisionValue);
+        //Debug.Log(TotalVisionValue);
     }
     void GetChildren()
     {
@@ -47,7 +47,7 @@ public class VisionEnemies : MonoBehaviour
         foreach (Transform child in directChildren)
         {
             SecurityCamera fovCamera = child.GetComponent<SecurityCamera>();
-            Debug.Log(child.name + ": " + fovCamera.getVisionValue());
+            //Debug.Log(child.name + ": " + fovCamera.getVisionValue());
             TotalVisionValue += fovCamera.getVisionValue();
         }
     }
