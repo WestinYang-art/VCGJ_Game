@@ -4,10 +4,14 @@ public class OctoRenderScript : MonoBehaviour
 {
     SpriteRenderer sprite;
     private GameObject player;
+    public PlayerMovement script;
+    private float currentCamo;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
+        script = player.GetComponent<PlayerMovement>();
+        currentCamo = script.currentCamo;
         sprite = player.GetComponent<SpriteRenderer>();
     }
 
@@ -16,7 +20,8 @@ public class OctoRenderScript : MonoBehaviour
     {
         // in theory, we also want to check whether certain conditions are met
         // but the current focus is making it work 
-        if (Input.GetKey(KeyCode.C) && !player.GetComponent<PlayerMovement>().isMoving())
+        if (Input.GetKey(KeyCode.C) && !player.GetComponent<PlayerMovement>().isMoving()
+            && currentCamo > 0)
         {
             sprite.color = new Color(1, 1, 1, 0.3f);
         }
