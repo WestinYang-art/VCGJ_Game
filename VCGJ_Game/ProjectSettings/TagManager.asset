@@ -9,6 +9,7 @@ TagManager:
   - Goal
   - Slider
   - Bar
+  - Acid
   layers:
   - Default
   - TransparentFX

@@ -31,5 +31,11 @@ public class TravelScript : MonoBehaviour
             Debug.Log("Goal!");
             SceneManager.LoadScene("PlayerTest");
         }
+        else if (collision.collider.tag == "Acid")
+        {
+            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAGHSAIGhasdbfpoajbskfuabwj,hfbwaself");
+
+        }
+        Debug.Log(collision.collider.tag);
     }
 }
