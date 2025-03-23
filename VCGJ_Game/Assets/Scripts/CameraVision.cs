@@ -2,24 +2,19 @@ using UnityEngine;
 
 public class SecurityCamera : MonoBehaviour
 {
-
     [Header("Rotation Settings")]
-    public float rotationAngle = 45f; // Maximum angle from the initial position
-    public float rotationSpeed = 2f;  // Speed of the rotation
-
-    [Header("Movement Settings")]
-    public int test = 0;
+    public float rotationAngle = 45f;
+    public float rotationSpeed = 2f;
 
     [Header("Detection Settings")]
     public Transform player;
     public float detectionRange = 10f;
-    public float fieldOfView = 30f; // Half-angle
+    public float fieldOfView = 30f;
     public LayerMask obstructionMask;
     public bool playerDetected;
 
-
     [Header("Field of View Settings")]
-    public Transform fovObject; // Drag your FOV child here
+    public Transform fovObject;
     public int meshResolution = 30;
     public Material fovMaterial;
 
@@ -27,20 +22,22 @@ public class SecurityCamera : MonoBehaviour
     public string spriteSortingLayer = "Default";
     public int spriteSortingOrder = 0;
     public string fovSortingLayer = "Default";
-    public int fovSortingOrder = -1; // Render behind the sprite
+    public int fovSortingOrder = -1;
 
     private Mesh fovMesh;
-
     private float startZRotation;
-    public float detectionValue;
-    public float distanceToPlayer;
+    float distanceToPlayer;
 
+    // New fields
+    private bool returningToSweep = false;
+    private float returnSpeed = 100f; // Speed to return to sweep rotation
+    private float detectionCooldown = 2f; // Seconds to stay in focus mode after losing sight
+    private float cooldownTimer = 0f;
 
     void Start()
     {
         startZRotation = transform.eulerAngles.z;
 
-        // Create mesh on the child object
         MeshFilter mf = fovObject.gameObject.AddComponent<MeshFilter>();
         MeshRenderer mr = fovObject.gameObject.AddComponent<MeshRenderer>();
 
@@ -52,11 +49,9 @@ public class SecurityCamera : MonoBehaviour
         mr.material.SetFloat("_Falloff", 0.6f);
         mr.material.SetFloat("_MinAlpha", 0.3f);
 
-        // Set FOV mesh to render behind the sprite
         mr.sortingLayerName = fovSortingLayer;
         mr.sortingOrder = fovSortingOrder;
 
-        // Optional: also configure your sprite sorting in this script if needed
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
@@ -70,21 +65,39 @@ public class SecurityCamera : MonoBehaviour
         if (playerDetected)
         {
             focusPlayer();
+            returningToSweep = false;
+            cooldownTimer = detectionCooldown;
         }
-        else
+        else if (cooldownTimer > 0)
+        {
+            cooldownTimer -= Time.deltaTime;
+            focusPlayer(); // Still focus during cooldown
+        }
+        else if (!returningToSweep)
+        {
+            // Start smooth return
+            returningToSweep = true;
+        }
+
+        if (returningToSweep)
+        {
+            returnToSweep();
+        }
+        else if (!playerDetected && cooldownTimer <= 0)
         {
             RotateCamera();
         }
+
         DetectPlayer();
         DrawFOV();
     }
 
     void RotateCamera()
     {
-        // Back and forth rotation using sine wave
         float zRotation = startZRotation + Mathf.Sin(Time.time * rotationSpeed) * rotationAngle;
         transform.rotation = Quaternion.Euler(0, 0, zRotation);
     }
+
     void focusPlayer()
     {
         Vector2 direction = player.position - transform.position;
@@ -92,7 +105,19 @@ public class SecurityCamera : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle), 200f * Time.deltaTime);
     }
 
-    
+    void returnToSweep()
+    {
+        // Smoothly rotate back to the sweep's "midpoint" angle
+        Quaternion targetRotation = Quaternion.Euler(0, 0, startZRotation);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, returnSpeed * Time.deltaTime);
+
+        // If we're close enough, stop returning
+        if (Quaternion.Angle(transform.rotation, targetRotation) < 0.5f)
+        {
+            returningToSweep = false;
+        }
+    }
+
     void DetectPlayer()
     {
         playerDetected = false;
@@ -106,12 +131,11 @@ public class SecurityCamera : MonoBehaviour
 
             if (angleToPlayer < fieldOfView)
             {
-                // Raycast to detect if there's an obstruction
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer.normalized, detectionRange, ~obstructionMask);
                 if (hit.collider != null && hit.collider.transform == player)
                 {
                     playerDetected = true;
-                    //Debug.Log("Player detected!");
+                    Debug.Log("Player detected!");
                 }
             }
         }
@@ -124,7 +148,7 @@ public class SecurityCamera : MonoBehaviour
         Vector3[] vertices = new Vector3[meshResolution + 2];
         int[] triangles = new int[meshResolution * 3];
 
-        vertices[0] = Vector3.zero; // origin is now the FOV child position
+        vertices[0] = Vector3.zero;
 
         float angleStep = (fieldOfView * 2f) / meshResolution;
 
@@ -142,14 +166,13 @@ public class SecurityCamera : MonoBehaviour
             triangles[i * 3 + 1] = i + 2;
             triangles[i * 3 + 2] = i + 1;
         }
+
         fovMesh.vertices = vertices;
         fovMesh.triangles = triangles;
-
     }
-    // Optional: Visualize detection range and FOV in Scene view
+
     void OnDrawGizmosSelected()
     {
-        //Sphere of detection
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
@@ -160,7 +183,11 @@ public class SecurityCamera : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * detectionRange);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * detectionRange);
     }
-    public float getVisionValue() {
-        return (detectionRange - distanceToPlayer);
+    public float getVisionValue()
+    {
+        return Mathf.Max(detectionRange - distanceToPlayer,0);
     }
 }
+
+
+
