@@ -114,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
     // if not, they can turn invisible
     public bool isMoving()
     {
-        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        if (horizontal == 0 && vertical == 0)
         {
             return false;
         }
