@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public Slider camoBar;
     private float horizontal;
     private float vertical;
     private bool squeeze;
-    public float maxCamo = 5.0f;
-    public float currentCamo = 5.0f;
+    public float maxCamo = 100.0f;
+    public float currentCamo = 100.0f;
     public float acceleration;
     public float maxSpeed;
     //tentacle storage
@@ -30,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     {
         playerMovement();
         getInput();
+        updateCamo();
     }
 
     private void getInput()
@@ -133,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (currentCamo > 0) 
             {
-                currentCamo -= 1;
+                currentCamo -= 1.0f;
             }
             else 
             {
@@ -145,13 +148,21 @@ public class PlayerMovement : MonoBehaviour
             if (currentCamo < maxCamo)
             {
                 currentCamo += 0.5f;
-                currentCamo = Mathf.Clamp(currentCamo, 0, 5.0f);
             }
             else
             {
-                currentCamo = 5.0f;
+                currentCamo = 100.0f;
             }
         }
+        else 
+        {
+            currentCamo = currentCamo;
+        }
+    }
+
+    public float getCamo ()
+    {
+        return currentCamo;
     }
 
     // checks if a tentacle is available in that direction using the array

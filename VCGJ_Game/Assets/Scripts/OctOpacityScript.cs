@@ -20,12 +20,19 @@ public class OctoRenderScript : MonoBehaviour
     {
         // in theory, we also want to check whether certain conditions are met
         // but the current focus is making it work 
-        if (Input.GetKey(KeyCode.C) && !player.GetComponent<PlayerMovement>().isMoving()
-            && currentCamo > 0)
+        if (Input.GetKey(KeyCode.C) && !player.GetComponent<PlayerMovement>().isMoving())
         {
-            sprite.color = new Color(1, 1, 1, 0.3f);
+            if (currentCamo > 0)
+            {
+                sprite.color = new Color(1, 1, 1, 0.3f);
+            }
+
         }
-        else 
+        else if (Input.GetKey(KeyCode.C) && currentCamo == 0 || !Input.GetKey(KeyCode.C))
+        {
+            sprite.color = new Color(1, 1, 1, 1);
+        }
+        else
         {
             sprite.color = new Color(1, 1, 1, 1);
         }
