@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public Slider camoBar;
     private float horizontal;
     private float vertical;
     private bool squeeze;
+    public float maxCamo = 100.0f;
+    public float currentCamo = 100.0f;
     public float acceleration;
     public float maxSpeed;
-    public GameObject[] tentacles;
+    //tentacle storage
+    private int[][] tentacles;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,13 +32,14 @@ public class PlayerMovement : MonoBehaviour
     {
         playerMovement();
         getInput();
+        updateCamo();
     }
 
     private void getInput()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        squeeze = Input.GetKey(KeyCode.S);  //doesn't seem to do what I intended
+        squeeze = Input.GetKey(KeyCode.S); 
     }
 
     void playerMovement() // calculations for acceleration and movement
@@ -98,7 +104,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // if player is pressing button, they are in the squeeze state.
-    // always true until I figure out how to make it work with the key
     public bool canSqueeze() 
     {
         if (squeeze)
@@ -110,13 +115,89 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
     }
+
+    // checks whether the player is currently moving. 
+    // if not, they can turn invisible
+    public bool isMoving()
+    {
+        if (horizontal == 0 && vertical == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public void updateCamo()
+    {
+        if (Input.GetKey(KeyCode.C) && !isMoving())
+        {
+            if (currentCamo > 0) 
+            {
+                currentCamo -= 1.0f;
+            }
+            else 
+            {
+                currentCamo = 0;
+            }
+        }
+        else if (!Input.GetKey(KeyCode.C) && !isMoving())
+        {
+            if (currentCamo < maxCamo)
+            {
+                currentCamo += 0.5f;
+            }
+            else
+            {
+                currentCamo = 100.0f;
+            }
+        }
+        else 
+        {
+            currentCamo = currentCamo;
+        }
+    }
+
+    public float getCamo ()
+    {
+        return currentCamo;
+    }
+
+    // checks if a tentacle is available in that direction using the array
+    public void TentacleCheck(int num)
+    {
+        if (tentacles[num] == null)
+        {
+            string numS = num.ToString();
+            Debug.Log(numS + " tentacle array is empty");
+        }
+        else if (tentacles[num][0] == 1 || tentacles[num][1] == 1)
+        {
+            if ((tentacles[num][0] == 1))
+            {
+                tentacles[num][0] = 0;
+            }
+            else if ((tentacles[num][1] == 1))
+            {
+                tentacles[num][1] = 0;
+            }
+            //gameManager.GetComponent<OnStart>().TentacleInitialize(this, player);    
+        }
+        else
+        {
+            Debug.Log("no available tentacles");
+        }
+    }
+
     // this will decide if the player is in range of the grapple point or not ps. for now set it to true just to make sure that it connects xd
     public bool inRange()
     {
         return true;
     }
 
-    public void setTentacles(GameObject[] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
+    public void setTentacles(int[][] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
     {
         this.tentacles = tentacles;
     }
