@@ -8,8 +8,11 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     private float vertical;
     private bool squeeze;
+    public float maxCamo = 5.0f;
+    public float currentCamo = 5.0f;
     public float acceleration;
     public float maxSpeed;
+
     public GameObject[] tentacles;
     // Start is called before the first frame update
     void Start()
@@ -123,6 +126,35 @@ public class PlayerMovement : MonoBehaviour
             return true;
         }
     }
+
+    public void updateCamo()
+    {
+        if (Input.GetKey(KeyCode.C) && !isMoving())
+        {
+            if (currentCamo > 0) 
+            {
+                currentCamo -= 1;
+            }
+            else 
+            {
+                currentCamo = 0;
+            }
+        }
+        else if (!Input.GetKey(KeyCode.C) && !isMoving())
+        {
+            if (currentCamo < maxCamo)
+            {
+                currentCamo += 0.5f;
+                currentCamo = Mathf.Clamp(currentCamo, 0, 5.0f);
+            }
+            else
+            {
+                currentCamo = 5.0f;
+            }
+        }
+    }
+
+
 
     // this will decide if the player is in range of the grapple point or not ps. for now set it to true just to make sure that it connects xd
     public bool inRange()
