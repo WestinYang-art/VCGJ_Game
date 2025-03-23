@@ -16,7 +16,7 @@ public class SecurityCamera : MonoBehaviour
 
 
     [Header("Field of View Settings")]
-    public Transform fovObject; // Drag your FOV child GameObject here
+    public Transform fovObject; // Drag your FOV child here
     public int meshResolution = 30;
     public Material fovMaterial;
 
@@ -79,6 +79,11 @@ public class SecurityCamera : MonoBehaviour
     {
         fovMesh.Clear();
 
+        // Make sure the child object itself is clean
+        fovObject.localPosition = Vector3.zero;
+        fovObject.localScale = Vector3.one;
+        fovObject.localRotation = Quaternion.identity;
+
         Vector3[] vertices = new Vector3[meshResolution + 2];
         int[] triangles = new int[meshResolution * 3];
 
@@ -90,23 +95,25 @@ public class SecurityCamera : MonoBehaviour
         {
             float angle = -fieldOfView + angleStep * i;
             float rad = Mathf.Deg2Rad * angle;
-            Vector3 vertex = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * detectionRange;
+            Vector3 vertex = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * (detectionRange);
             vertices[i + 1] = vertex;
         }
 
         for (int i = 0; i < meshResolution; i++)
         {
             triangles[i * 3] = 0;
-            triangles[i * 3 + 1] = i + 1;
-            triangles[i * 3 + 2] = i + 2;
+            triangles[i * 3 + 1] = i + 2;
+            triangles[i * 3 + 2] = i + 1;
         }
 
         fovMesh.vertices = vertices;
         fovMesh.triangles = triangles;
+
     }
     // Optional: Visualize detection range and FOV in Scene view
     void OnDrawGizmosSelected()
     {
+        //Sphere of detection
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
