@@ -20,8 +20,14 @@ public class SecurityCamera : MonoBehaviour
     public int meshResolution = 30;
     public Material fovMaterial;
 
+    [Header("Sorting Settings")]
+    public string spriteSortingLayer = "Default";
+    public int spriteSortingOrder = 0;
+    public string fovSortingLayer = "Default";
+    public int fovSortingOrder = -1; // Render behind the sprite
 
     private Mesh fovMesh;
+
     private float startZRotation;
 
     void Start()
@@ -35,6 +41,22 @@ public class SecurityCamera : MonoBehaviour
         fovMesh = new Mesh();
         mf.mesh = fovMesh;
         mr.material = fovMaterial;
+
+        mr.material.SetFloat("_Range", detectionRange);
+        mr.material.SetFloat("_Falloff", 0.6f);
+        mr.material.SetFloat("_MinAlpha", 0.3f);
+
+        // Set FOV mesh to render behind the sprite
+        mr.sortingLayerName = fovSortingLayer;
+        mr.sortingOrder = fovSortingOrder;
+
+        // Optional: also configure your sprite sorting in this script if needed
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.sortingLayerName = spriteSortingLayer;
+            sr.sortingOrder = spriteSortingOrder;
+        }
     }
 
     void Update()
@@ -78,11 +100,6 @@ public class SecurityCamera : MonoBehaviour
     void DrawFOV()
     {
         fovMesh.Clear();
-
-        // Make sure the child object itself is clean
-        fovObject.localPosition = Vector3.zero;
-        fovObject.localScale = Vector3.one;
-        fovObject.localRotation = Quaternion.identity;
 
         Vector3[] vertices = new Vector3[meshResolution + 2];
         int[] triangles = new int[meshResolution * 3];
