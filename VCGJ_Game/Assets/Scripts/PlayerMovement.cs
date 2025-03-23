@@ -12,8 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public float currentCamo = 5.0f;
     public float acceleration;
     public float maxSpeed;
-
-    public GameObject[] tentacles;
+    //tentacle storage
+    private int[][] tentacles;
     // Start is called before the first frame update
     void Start()
     {
@@ -154,7 +154,31 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
+    // checks if a tentacle is available in that direction using the array
+    public void TentacleCheck(int num)
+    {
+        if (tentacles[num] == null)
+        {
+            string numS = num.ToString();
+            Debug.Log(numS + " tentacle array is empty");
+        }
+        else if (tentacles[num][0] == 1 || tentacles[num][1] == 1)
+        {
+            if ((tentacles[num][0] == 1))
+            {
+                tentacles[num][0] = 0;
+            }
+            else if ((tentacles[num][1] == 1))
+            {
+                tentacles[num][1] = 0;
+            }
+            //gameManager.GetComponent<OnStart>().TentacleInitialize(this, player);    
+        }
+        else
+        {
+            Debug.Log("no available tentacles");
+        }
+    }
 
     // this will decide if the player is in range of the grapple point or not ps. for now set it to true just to make sure that it connects xd
     public bool inRange()
@@ -162,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
         return true;
     }
 
-    public void setTentacles(GameObject[] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
+    public void setTentacles(int[][] tentacles) // decide the number of tentacles and where to place them ??? not sure oh well
     {
         this.tentacles = tentacles;
     }

@@ -5,14 +5,22 @@ using UnityEngine;
 public class OnStart : MonoBehaviour
 {
     public GameObject[] grapplePoints;
-    public GameObject[] tentacles;
+    public int[][] tentacles = new int[4][];
     public GameObject player;    
 
     // Start is called before the first frame update
     void Start()
     {
-        grappleInitialize();
-        tentacleInitialize();
+        GrappleInitialize();
+        for (int i = 0; i < 4; i++)
+        {
+            tentacles[i] = new int[2];
+            for (int k = 0; k < 2; k++)
+            {
+                tentacles[i][k] = 1;
+            }
+        }    
+        player.GetComponent<PlayerMovement>().setTentacles(tentacles);
     }
 
     // Update is called once per frame
@@ -22,7 +30,7 @@ public class OnStart : MonoBehaviour
     }
 
     // assigns each grapplePoint player variable to the player in the scene
-    private void grappleInitialize()
+    private void GrappleInitialize()
     {
         foreach (GameObject grapplePoint in grapplePoints)
         {
@@ -30,9 +38,9 @@ public class OnStart : MonoBehaviour
         }
     }
 
-    // adds the tentacles to the player
-    private void tentacleInitialize()
+    // creates a tentacle between the player and the grapplePoint
+    private void TentacleInitialize(GameObject grapplePoint, GameObject Player)
     {
-        player.GetComponent<PlayerMovement>().setTentacles(tentacles);
+        
     }
 }
