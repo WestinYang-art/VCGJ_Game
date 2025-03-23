@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class VisionEnemies : MonoBehaviour
 {
@@ -37,8 +38,14 @@ public class VisionEnemies : MonoBehaviour
         foreach (Transform child in directChildren)
         {
             Debug.Log("Direct child: " + child.name);
-            SecurityCamera fovCamera = child.GetComponent<SecurityCamera>();
-            Debug.Log(child.name + ": " + fovCamera.getVisionValue());
+            try
+            { 
+                SecurityCamera fovCamera = child.GetComponent<SecurityCamera>();
+                Debug.Log(child.name + ": " + fovCamera.getVisionValue());
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
     void sumVision()
@@ -46,9 +53,13 @@ public class VisionEnemies : MonoBehaviour
         TotalVisionValue = 0;
         foreach (Transform child in directChildren)
         {
-            SecurityCamera fovCamera = child.GetComponent<SecurityCamera>();
+            try { 
+                SecurityCamera fovCamera = child.GetComponent<SecurityCamera>();
+                TotalVisionValue += fovCamera.getVisionValue();
+                }
+                catch (Exception e)
+                {}
             //Debug.Log(child.name + ": " + fovCamera.getVisionValue());
-            TotalVisionValue += fovCamera.getVisionValue();
         }
     }
 }
