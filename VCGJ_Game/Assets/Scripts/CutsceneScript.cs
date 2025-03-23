@@ -5,15 +5,18 @@ using UnityEngine.Video;
 
 public class CutsceneScript : MonoBehaviour
 {
-    GameObject canvas;
+    GameObject world;
+    GameObject actors;
     VideoPlayer video_player;
     private double time;
     private double current_time;
     // Start is called before the first frame update
     void Start()
     {
-        canvas = GameObject.Find("Canvas");
-        canvas.SetActive(false);
+        world = GameObject.Find("Game World");
+        world.SetActive(false);
+        actors = GameObject.Find("Game Actors");
+        actors.SetActive(false);
 
         video_player = GetComponent<VideoPlayer>();
         time = video_player.clip.length;
@@ -22,10 +25,12 @@ public class CutsceneScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((video_player.frame) > 0 && (video_player.isPlaying == false))
+
+        if (Input.GetKeyDown(KeyCode.Escape) || ((video_player.frame) > 0 && (video_player.isPlaying == false)))
         {
             Debug.Log("Deactivate");
-            canvas.SetActive(true);
+            world.SetActive(true);
+            actors.SetActive(true);
             gameObject.SetActive(false);
         }
     }
