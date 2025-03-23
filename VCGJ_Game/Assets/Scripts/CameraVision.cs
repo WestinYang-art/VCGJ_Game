@@ -29,6 +29,7 @@ public class SecurityCamera : MonoBehaviour
     private Mesh fovMesh;
 
     private float startZRotation;
+    public float detectionValue;
 
     void Start()
     {
@@ -61,7 +62,14 @@ public class SecurityCamera : MonoBehaviour
 
     void Update()
     {
-        RotateCamera();
+        if (playerDetected)
+        {
+            focusPlayer();
+        }
+        else
+        {
+            RotateCamera();
+        }
         DetectPlayer();
         DrawFOV();
     }
@@ -72,7 +80,14 @@ public class SecurityCamera : MonoBehaviour
         float zRotation = startZRotation + Mathf.Sin(Time.time * rotationSpeed) * rotationAngle;
         transform.rotation = Quaternion.Euler(0, 0, zRotation);
     }
+    void focusPlayer()
+    {
+        Vector2 direction = player.position - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle), 200f * Time.deltaTime);
+    }
 
+    
     void DetectPlayer()
     {
         playerDetected = false;

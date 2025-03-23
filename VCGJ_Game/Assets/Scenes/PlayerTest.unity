@@ -589,6 +589,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1597617112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1597617113}
+  m_Layer: 0
+  m_Name: AllCameras
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1597617113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597617112}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.48220938, y: 0.3684916, z: -0.0025196888}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2123843528}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2029942160
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,13 +907,13 @@ Transform:
   m_GameObject: {fileID: 2123843526}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.70210534, w: 0.71207315}
-  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalPosition: {x: 0.48220938, y: 3.6315084, z: 0.0025196888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1429086727}
   - {fileID: 1374134922}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1597617113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -89.192}
 --- !u!114 &2123843529
 MonoBehaviour:
@@ -896,17 +928,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationAngle: 45
-  rotationSpeed: 2
+  rotationSpeed: 1
   player: {fileID: 2029942165}
-  detectionRange: 9
+  detectionRange: 12
   fieldOfView: 45
   obstructionMask:
     serializedVersion: 2
     m_Bits: 0
   playerDetected: 0
   fovObject: {fileID: 1374134922}
-  meshResolution: 30
   fovMaterial: {fileID: 2100000, guid: a64d8394f6eab334b8ad50bd611d46f5, type: 2}
+  meshResolution: 30
 --- !u!50 &2123843530
 Rigidbody2D:
   serializedVersion: 4
@@ -1059,4 +1091,4 @@ SceneRoots:
   - {fileID: 799732332}
   - {fileID: 8962285037804449265}
   - {fileID: 324523649}
-  - {fileID: 2123843528}
+  - {fileID: 1597617113}
