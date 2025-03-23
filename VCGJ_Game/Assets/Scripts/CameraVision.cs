@@ -7,6 +7,9 @@ public class SecurityCamera : MonoBehaviour
     public float rotationAngle = 45f; // Maximum angle from the initial position
     public float rotationSpeed = 2f;  // Speed of the rotation
 
+    [Header("Movement Settings")]
+    public int test = 0;
+
     [Header("Detection Settings")]
     public Transform player;
     public float detectionRange = 10f;
@@ -30,6 +33,8 @@ public class SecurityCamera : MonoBehaviour
 
     private float startZRotation;
     public float detectionValue;
+    public float distanceToPlayer;
+
 
     void Start()
     {
@@ -93,7 +98,7 @@ public class SecurityCamera : MonoBehaviour
         playerDetected = false;
 
         Vector2 directionToPlayer = player.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
+        distanceToPlayer = directionToPlayer.magnitude;
 
         if (distanceToPlayer < detectionRange)
         {
@@ -106,7 +111,7 @@ public class SecurityCamera : MonoBehaviour
                 if (hit.collider != null && hit.collider.transform == player)
                 {
                     playerDetected = true;
-                    Debug.Log("Player detected!");
+                    //Debug.Log("Player detected!");
                 }
             }
         }
@@ -137,7 +142,6 @@ public class SecurityCamera : MonoBehaviour
             triangles[i * 3 + 1] = i + 2;
             triangles[i * 3 + 2] = i + 1;
         }
-
         fovMesh.vertices = vertices;
         fovMesh.triangles = triangles;
 
@@ -155,5 +159,8 @@ public class SecurityCamera : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * detectionRange);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * detectionRange);
+    }
+    public float getVisionValue() {
+        return (detectionRange - distanceToPlayer);
     }
 }
